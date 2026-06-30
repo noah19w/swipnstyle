@@ -100,11 +100,7 @@ function LoginScreen({ onSuccess, onRegister, onBack }) {
         {[["Email", email, setEmail, "email", "claire@email.ch"],
           ["Mot de passe", password, setPassword, "password", "••••••••"]
         ].map(([label, val, setter, type, ph]) => (
-          <div key={label} style={{ marginBottom:14 }}>
-            <label style={{ fontFamily:"'JetBrains Mono'", fontSize:10, color:"#8a8473", display:"block", marginBottom:5 }}>{label.toUpperCase()}</label>
-            <input type={type} value={val} onChange={e => { setter(e.target.value); setError(""); }} placeholder={ph}
-              style={{ width:"100%", padding:"12px 14px", border:"1.5px solid #D9D2C2", borderRadius:10, fontSize:14, fontFamily:"Manrope", background:"#fff" }} />
-          </div>
+          <FormInput key={label} label={label} value={val} onChange={v => { setter(v); setError(""); }} type={type} placeholder={ph} />
         ))}
 
         {error && <div style={{ color:"#E2462B", fontSize:12, marginBottom:12, fontFamily:"'JetBrains Mono'" }}>{error}</div>}
@@ -122,6 +118,24 @@ function LoginScreen({ onSuccess, onRegister, onBack }) {
           <span onClick={onRegister} style={{ color:"#E2462B", fontWeight:700, cursor:"pointer" }}>Créer un compte</span>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ---------- Input réutilisable (défini hors des composants pour éviter le bug de focus) ----------
+function FormInput({ label, value, onChange, type = "text", placeholder }) {
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <label style={{ fontFamily: "'JetBrains Mono'", fontSize: 10, color: "#8a8473", display: "block", marginBottom: 4 }}>
+        {label.toUpperCase()}
+      </label>
+      <input
+        type={type}
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        style={{ width: "100%", padding: "11px 13px", border: "1.5px solid #D9D2C2", borderRadius: 10, fontSize: 13.5, fontFamily: "Manrope", background: "#fff" }}
+      />
     </div>
   );
 }
@@ -162,11 +176,7 @@ function RegisterScreen({ onSuccess, onLogin, onBack }) {
   };
 
   const Input = ({ label, k, type="text", ph }) => (
-    <div style={{ marginBottom:12 }}>
-      <label style={{ fontFamily:"'JetBrains Mono'", fontSize:10, color:"#8a8473", display:"block", marginBottom:4 }}>{label.toUpperCase()}</label>
-      <input type={type} value={form[k]} onChange={e => update(k, e.target.value)} placeholder={ph}
-        style={{ width:"100%", padding:"11px 13px", border:"1.5px solid #D9D2C2", borderRadius:10, fontSize:13.5, fontFamily:"Manrope", background:"#fff" }} />
-    </div>
+    <FormInput label={label} value={form[k]} onChange={v => update(k, v)} type={type} placeholder={ph} />
   );
 
   const CheckRow = ({ checked, onChange, children, required }) => (
