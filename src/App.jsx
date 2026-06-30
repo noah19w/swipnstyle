@@ -215,11 +215,15 @@ function RegisterScreen({ onSuccess, onLogin, onBack }) {
           <>
             <div style={{ fontFamily:"'Fraunces',serif", fontSize:15, fontWeight:700, marginBottom:16 }}>Vos informations</div>
             <div style={{ display:"flex", gap:10 }}>
-              <div style={{ flex:1 }}><Input label="Prénom" k="prenom" ph="Claire" /></div>
-              <div style={{ flex:1 }}><Input label="Nom" k="nom" ph="Moreau" /></div>
+              <div style={{ flex:1 }}>
+                <FormInput label="Prénom" value={form.prenom} onChange={v => update("prenom", v)} placeholder="Claire" />
+              </div>
+              <div style={{ flex:1 }}>
+                <FormInput label="Nom" value={form.nom} onChange={v => update("nom", v)} placeholder="Moreau" />
+              </div>
             </div>
-            <Input label="Email" k="email" type="email" ph="claire@email.ch" />
-            <Input label="Téléphone" k="tel" type="tel" ph="+41 79 000 00 00" />
+            <FormInput label="Email" value={form.email} onChange={v => update("email", v)} type="email" placeholder="claire@email.ch" />
+            <FormInput label="Téléphone" value={form.tel} onChange={v => update("tel", v)} type="tel" placeholder="+41 79 000 00 00" />
             <div style={{ background:"#FFF3E0", border:"1px solid #F5C518", borderRadius:8, padding:"8px 12px", marginBottom:16, fontSize:11, color:"#8B6E00" }}>
               🔒 Vos données sont protégées conformément à la nLPD suisse.
             </div>
@@ -230,8 +234,8 @@ function RegisterScreen({ onSuccess, onLogin, onBack }) {
         {step === 2 && (
           <>
             <div style={{ fontFamily:"'Fraunces',serif", fontSize:15, fontWeight:700, marginBottom:16 }}>Sécurité du compte</div>
-            <Input label="Mot de passe" k="password" type="password" ph="8 caractères minimum" />
-            <Input label="Confirmer le mot de passe" k="confirm" type="password" ph="Répétez le mot de passe" />
+            <FormInput label="Mot de passe" value={form.password} onChange={v => update("password", v)} type="password" placeholder="8 caractères minimum" />
+            <FormInput label="Confirmer le mot de passe" value={form.confirm} onChange={v => update("confirm", v)} type="password" placeholder="Répétez le mot de passe" />
             <div style={{ background:"#F0F7F0", border:"1px solid #7C8B6F", borderRadius:8, padding:"8px 12px", marginBottom:16 }}>
               {["8 caractères minimum","Une majuscule","Un chiffre"].map((r, i) => (
                 <div key={i} style={{ fontSize:11, color:"#4a6040", marginBottom:3 }}>
