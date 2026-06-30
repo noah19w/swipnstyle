@@ -18,6 +18,299 @@ function Logo({ size = 28, dark = false }) {
   );
 }
 
+// ---------- Écran Splash (accueil) ----------
+function SplashScreen({ onLogin, onRegister }) {
+  return (
+    <div style={{ height:"100%", background:"#1C1A16", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"space-between", padding:"50px 24px 36px", position:"relative", overflow:"hidden" }}>
+      {/* Cercle décoratif */}
+      <div style={{ position:"absolute", width:300, height:300, borderRadius:"50%", background:"radial-gradient(circle, rgba(226,70,43,.2) 0%, transparent 70%)", top:"20%", left:"50%", transform:"translateX(-50%)" }} />
+
+      {/* Logo + tagline */}
+      <div style={{ textAlign:"center", zIndex:1 }}>
+        <div style={{ marginBottom:16 }}>
+          <svg width="60" height="78" viewBox="0 0 80 100">
+            <rect x="8" y="24" width="64" height="72" rx="6" fill="#F7F4EC"/>
+            <circle cx="40" cy="20" r="8" fill="none" stroke="#D9D2C2" stroke-width="2.5"/>
+            <line x1="40" y1="12" x2="40" y2="0" stroke="#D9D2C2" stroke-width="2" stroke-dasharray="3,2"/>
+            <text x="40" y="68" text-anchor="middle" font-family="serif" font-weight="700" font-size="24" fill="#1C1A16">S</text>
+            <text x="40" y="84" text-anchor="middle" font-family="monospace" font-size="9" fill="#E2462B" letter-spacing="1">'n S</text>
+          </svg>
+        </div>
+        <Logo size={38} dark={true} />
+        <div style={{ fontFamily:"'JetBrains Mono'", fontSize:11, color:"rgba(255,255,255,.4)", marginTop:10, letterSpacing:".1em" }}>MARKETPLACE · SUISSE ROMANDE</div>
+      </div>
+
+      {/* Illustration centrale */}
+      <div style={{ zIndex:1, textAlign:"center" }}>
+        <div style={{ display:"flex", gap:12, justifyContent:"center", marginBottom:20 }}>
+          {[["👗","Femme"],["👔","Homme"],["👟","Shoes"]].map(([ic, label]) => (
+            <div key={label} style={{ background:"rgba(255,255,255,.07)", borderRadius:12, padding:"16px 14px", border:"1px solid rgba(255,255,255,.1)" }}>
+              <div style={{ fontSize:28, marginBottom:6 }}>{ic}</div>
+              <div style={{ fontFamily:"'JetBrains Mono'", fontSize:9, color:"rgba(255,255,255,.45)" }}>{label}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontFamily:"'Fraunces',serif", fontSize:22, color:"#F7F4EC", fontWeight:700, lineHeight:1.3, marginBottom:8 }}>
+          Donnez une seconde vie<br/>à votre dressing.
+        </div>
+        <div style={{ fontSize:12, color:"rgba(255,255,255,.45)", lineHeight:1.6 }}>
+          Swipez, vendez, achetez — en toute sécurité.
+        </div>
+      </div>
+
+      {/* Boutons */}
+      <div style={{ width:"100%", zIndex:1, display:"flex", flexDirection:"column", gap:10 }}>
+        <button onClick={onRegister} style={{ width:"100%", padding:"14px", background:"#E2462B", color:"#fff", border:"none", borderRadius:12, fontSize:14, fontWeight:700, fontFamily:"Manrope", cursor:"pointer" }}>
+          Créer un compte
+        </button>
+        <button onClick={onLogin} style={{ width:"100%", padding:"14px", background:"transparent", color:"#F7F4EC", border:"1.5px solid rgba(255,255,255,.25)", borderRadius:12, fontSize:14, fontWeight:700, fontFamily:"Manrope", cursor:"pointer" }}>
+          Se connecter
+        </button>
+        <div style={{ textAlign:"center", fontFamily:"'JetBrains Mono'", fontSize:9, color:"rgba(255,255,255,.25)", marginTop:4 }}>
+          En continuant, vous acceptez nos CGU & CGV
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Écran Connexion ----------
+function LoginScreen({ onSuccess, onRegister, onBack }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const login = () => {
+    if (!email || !password) { setError("Veuillez remplir tous les champs."); return; }
+    setLoading(true);
+    setTimeout(() => { setLoading(false); onSuccess({ email, name: email.split("@")[0] }); }, 1200);
+  };
+
+  return (
+    <div style={{ height:"100%", background:"#F7F4EC", overflowY:"auto" }}>
+      <div style={{ background:"#1C1A16", padding:"28px 20px 24px", textAlign:"center" }}>
+        <div onClick={onBack} style={{ fontFamily:"'JetBrains Mono'", fontSize:10, color:"rgba(255,255,255,.4)", cursor:"pointer", textAlign:"left", marginBottom:16 }}>← Retour</div>
+        <Logo size={22} dark={true} />
+        <div style={{ fontFamily:"'Fraunces',serif", fontSize:20, color:"#F7F4EC", fontWeight:700, marginTop:10 }}>Bon retour 👋</div>
+        <div style={{ fontSize:12, color:"rgba(255,255,255,.45)", marginTop:4 }}>Connectez-vous à votre compte</div>
+      </div>
+
+      <div style={{ padding:"24px 20px" }}>
+        {[["Email", email, setEmail, "email", "claire@email.ch"],
+          ["Mot de passe", password, setPassword, "password", "••••••••"]
+        ].map(([label, val, setter, type, ph]) => (
+          <div key={label} style={{ marginBottom:14 }}>
+            <label style={{ fontFamily:"'JetBrains Mono'", fontSize:10, color:"#8a8473", display:"block", marginBottom:5 }}>{label.toUpperCase()}</label>
+            <input type={type} value={val} onChange={e => { setter(e.target.value); setError(""); }} placeholder={ph}
+              style={{ width:"100%", padding:"12px 14px", border:"1.5px solid #D9D2C2", borderRadius:10, fontSize:14, fontFamily:"Manrope", background:"#fff" }} />
+          </div>
+        ))}
+
+        {error && <div style={{ color:"#E2462B", fontSize:12, marginBottom:12, fontFamily:"'JetBrains Mono'" }}>{error}</div>}
+
+        <div style={{ textAlign:"right", marginBottom:20 }}>
+          <span style={{ fontSize:12, color:"#E2462B", cursor:"pointer", fontFamily:"'JetBrains Mono'" }}>Mot de passe oublié ?</span>
+        </div>
+
+        <button onClick={login} style={{ width:"100%", padding:"14px", background: loading ? "#8a8473" : "#1C1A16", color:"#F7F4EC", border:"none", borderRadius:12, fontSize:14, fontWeight:700, fontFamily:"Manrope", cursor:"pointer" }}>
+          {loading ? "Connexion…" : "Se connecter"}
+        </button>
+
+        <div style={{ textAlign:"center", marginTop:20, fontSize:12.5, color:"#8a8473" }}>
+          Pas encore de compte ?{" "}
+          <span onClick={onRegister} style={{ color:"#E2462B", fontWeight:700, cursor:"pointer" }}>Créer un compte</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Écran Inscription ----------
+function RegisterScreen({ onSuccess, onLogin, onBack }) {
+  const [step, setStep] = useState(1); // 1=infos 2=sécurité 3=CGU 4=KYC
+  const [form, setForm] = useState({ prenom:"", nom:"", email:"", tel:"", password:"", confirm:"" });
+  const [cguAccepted, setCguAccepted] = useState(false);
+  const [cgvAccepted, setCgvAccepted] = useState(false);
+  const [confidAccepted, setConfidAccepted] = useState(false);
+  const [marketingAccepted, setMarketingAccepted] = useState(false);
+  const [error, setError] = useState("");
+  const [kycLoading, setKycLoading] = useState(false);
+  const [kycDone, setKycDone] = useState(false);
+
+  const update = (k, v) => { setForm(f => ({ ...f, [k]: v })); setError(""); };
+
+  const nextStep = () => {
+    if (step === 1) {
+      if (!form.prenom || !form.nom || !form.email || !form.tel) { setError("Tous les champs sont obligatoires."); return; }
+      if (!form.email.includes("@")) { setError("Email invalide."); return; }
+    }
+    if (step === 2) {
+      if (!form.password || form.password.length < 8) { setError("Mot de passe trop court (8 caractères min)."); return; }
+      if (form.password !== form.confirm) { setError("Les mots de passe ne correspondent pas."); return; }
+    }
+    if (step === 3) {
+      if (!cguAccepted || !cgvAccepted || !confidAccepted) { setError("Vous devez accepter les conditions obligatoires."); return; }
+    }
+    setError("");
+    setStep(s => s + 1);
+  };
+
+  const simulateKYC = () => {
+    setKycLoading(true);
+    setTimeout(() => { setKycLoading(false); setKycDone(true); }, 2000);
+  };
+
+  const Input = ({ label, k, type="text", ph }) => (
+    <div style={{ marginBottom:12 }}>
+      <label style={{ fontFamily:"'JetBrains Mono'", fontSize:10, color:"#8a8473", display:"block", marginBottom:4 }}>{label.toUpperCase()}</label>
+      <input type={type} value={form[k]} onChange={e => update(k, e.target.value)} placeholder={ph}
+        style={{ width:"100%", padding:"11px 13px", border:"1.5px solid #D9D2C2", borderRadius:10, fontSize:13.5, fontFamily:"Manrope", background:"#fff" }} />
+    </div>
+  );
+
+  const CheckRow = ({ checked, onChange, children, required }) => (
+    <div style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:12, padding:"10px 12px", background: checked ? "#F0F7F0" : "#fff", border:`1.5px solid ${checked ? "#7C8B6F" : "#D9D2C2"}`, borderRadius:10 }}>
+      <input type="checkbox" checked={checked} onChange={e => onChange(e.target.checked)} style={{ marginTop:2, accentColor:"#E2462B", width:16, height:16, flexShrink:0 }} />
+      <div style={{ fontSize:11.5, color:"#5c5848", lineHeight:1.5 }}>
+        {children}
+        {required && <span style={{ color:"#E2462B", fontFamily:"'JetBrains Mono'", fontSize:9, marginLeft:6 }}>OBLIGATOIRE</span>}
+      </div>
+    </div>
+  );
+
+  const steps = ["Infos", "Sécurité", "CGU", "Identité"];
+
+  return (
+    <div style={{ height:"100%", background:"#F7F4EC", overflowY:"auto" }}>
+      <div style={{ background:"#1C1A16", padding:"20px 20px 18px" }}>
+        <div onClick={onBack} style={{ fontFamily:"'JetBrains Mono'", fontSize:10, color:"rgba(255,255,255,.4)", cursor:"pointer", marginBottom:12 }}>← Retour</div>
+        <Logo size={18} dark={true} />
+        <div style={{ fontFamily:"'Fraunces',serif", fontSize:18, color:"#F7F4EC", fontWeight:700, marginTop:8 }}>Créer un compte</div>
+        {/* Barre de progression */}
+        <div style={{ display:"flex", gap:6, marginTop:14 }}>
+          {steps.map((s, i) => (
+            <div key={s} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:4 }}>
+              <div style={{ height:3, width:"100%", borderRadius:3, background: step > i+1 ? "#7C8B6F" : step === i+1 ? "#F5C518" : "rgba(255,255,255,.2)", transition:"background .3s" }} />
+              <div style={{ fontFamily:"'JetBrains Mono'", fontSize:8, color: step === i+1 ? "#F5C518" : "rgba(255,255,255,.3)" }}>{s}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ padding:"20px 20px 30px" }}>
+
+        {/* Étape 1 — Informations personnelles */}
+        {step === 1 && (
+          <>
+            <div style={{ fontFamily:"'Fraunces',serif", fontSize:15, fontWeight:700, marginBottom:16 }}>Vos informations</div>
+            <div style={{ display:"flex", gap:10 }}>
+              <div style={{ flex:1 }}><Input label="Prénom" k="prenom" ph="Claire" /></div>
+              <div style={{ flex:1 }}><Input label="Nom" k="nom" ph="Moreau" /></div>
+            </div>
+            <Input label="Email" k="email" type="email" ph="claire@email.ch" />
+            <Input label="Téléphone" k="tel" type="tel" ph="+41 79 000 00 00" />
+            <div style={{ background:"#FFF3E0", border:"1px solid #F5C518", borderRadius:8, padding:"8px 12px", marginBottom:16, fontSize:11, color:"#8B6E00" }}>
+              🔒 Vos données sont protégées conformément à la nLPD suisse.
+            </div>
+          </>
+        )}
+
+        {/* Étape 2 — Mot de passe */}
+        {step === 2 && (
+          <>
+            <div style={{ fontFamily:"'Fraunces',serif", fontSize:15, fontWeight:700, marginBottom:16 }}>Sécurité du compte</div>
+            <Input label="Mot de passe" k="password" type="password" ph="8 caractères minimum" />
+            <Input label="Confirmer le mot de passe" k="confirm" type="password" ph="Répétez le mot de passe" />
+            <div style={{ background:"#F0F7F0", border:"1px solid #7C8B6F", borderRadius:8, padding:"8px 12px", marginBottom:16 }}>
+              {["8 caractères minimum","Une majuscule","Un chiffre"].map((r, i) => (
+                <div key={i} style={{ fontSize:11, color:"#4a6040", marginBottom:3 }}>
+                  <span style={{ marginRight:6 }}>{form.password.length >= (i===0?8:1) ? "✓" : "○"}</span>{r}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Étape 3 — CGU / CGV */}
+        {step === 3 && (
+          <>
+            <div style={{ fontFamily:"'Fraunces',serif", fontSize:15, fontWeight:700, marginBottom:16 }}>Conditions & confidentialité</div>
+            <CheckRow checked={cguAccepted} onChange={setCguAccepted} required>
+              J'ai lu et j'accepte les <b>Conditions Générales d'Utilisation</b> de Swip'n Style.
+            </CheckRow>
+            <CheckRow checked={cgvAccepted} onChange={setCgvAccepted} required>
+              J'accepte les <b>Conditions Générales de Vente</b>, incluant les règles sur les modes de livraison et les garanties.
+            </CheckRow>
+            <CheckRow checked={confidAccepted} onChange={setConfidAccepted} required>
+              J'ai pris connaissance de la <b>Politique de Confidentialité</b> (traitement des données, nLPD suisse).
+            </CheckRow>
+            <CheckRow checked={marketingAccepted} onChange={setMarketingAccepted}>
+              J'accepte de recevoir les offres et actualités Swip'n Style par email. <span style={{ color:"#A39C89" }}>(facultatif)</span>
+            </CheckRow>
+            <div style={{ fontSize:10, color:"#A39C89", fontFamily:"'JetBrains Mono'", textAlign:"center", marginTop:8 }}>
+              Votre acceptation est horodatée et conservée conformément à la loi.
+            </div>
+          </>
+        )}
+
+        {/* Étape 4 — Vérification d'identité KYC */}
+        {step === 4 && (
+          <>
+            <div style={{ fontFamily:"'Fraunces',serif", fontSize:15, fontWeight:700, marginBottom:8 }}>Vérification d'identité</div>
+            <div style={{ fontSize:12, color:"#5c5848", lineHeight:1.6, marginBottom:20 }}>
+              Conformément à nos CGU, une vérification d'identité est obligatoire pour utiliser Swip'n Style. Vos documents sont traités par un prestataire KYC certifié — nous ne les stockons jamais.
+            </div>
+
+            {!kycDone ? (
+              <>
+                <div style={{ border:"1.5px dashed #D9D2C2", borderRadius:12, padding:20, textAlign:"center", marginBottom:16 }}>
+                  <div style={{ fontSize:40, marginBottom:10 }}>🪪</div>
+                  <div style={{ fontWeight:700, fontSize:13, marginBottom:6 }}>Carte d'identité ou Passeport</div>
+                  <div style={{ fontSize:11.5, color:"#8a8473", marginBottom:14 }}>Prenez une photo de votre document et un selfie pour confirmer votre identité.</div>
+                  <button onClick={simulateKYC} disabled={kycLoading}
+                    style={{ background:"#1C1A16", color:"#F7F4EC", border:"none", borderRadius:10, padding:"11px 24px", fontSize:13, fontWeight:700, cursor:"pointer", opacity: kycLoading ? 0.6 : 1 }}>
+                    {kycLoading ? "Vérification en cours…" : "📷 Lancer la vérification"}
+                  </button>
+                </div>
+                <div style={{ fontSize:10, color:"#A39C89", fontFamily:"'JetBrains Mono'", textAlign:"center" }}>
+                  La vérification prend environ 1 minute.
+                </div>
+              </>
+            ) : (
+              <div style={{ textAlign:"center", padding:"20px 0" }}>
+                <div style={{ fontSize:50, marginBottom:12 }}>✅</div>
+                <div style={{ fontFamily:"'Fraunces',serif", fontWeight:700, fontSize:18, marginBottom:8 }}>Identité vérifiée !</div>
+                <div style={{ fontSize:12, color:"#5c5848", marginBottom:24 }}>Votre compte est activé. Bienvenue sur Swip'n Style !</div>
+                <button onClick={() => onSuccess(form)}
+                  style={{ background:"#E2462B", color:"#fff", border:"none", borderRadius:12, padding:"13px 32px", fontSize:14, fontWeight:700, cursor:"pointer" }}>
+                  Accéder à l'app →
+                </button>
+              </div>
+            )}
+          </>
+        )}
+
+        {error && <div style={{ color:"#E2462B", fontSize:11.5, marginBottom:12, fontFamily:"'JetBrains Mono'" }}>⚠️ {error}</div>}
+
+        {step < 4 && (
+          <button onClick={nextStep}
+            style={{ width:"100%", padding:"13px", background:"#1C1A16", color:"#F7F4EC", border:"none", borderRadius:12, fontSize:14, fontWeight:700, fontFamily:"Manrope", cursor:"pointer", marginTop:8 }}>
+            Continuer →
+          </button>
+        )}
+
+        {step === 1 && (
+          <div style={{ textAlign:"center", marginTop:16, fontSize:12.5, color:"#8a8473" }}>
+            Déjà un compte ?{" "}
+            <span onClick={onLogin} style={{ color:"#E2462B", fontWeight:700, cursor:"pointer" }}>Se connecter</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ---------- Composants utilitaires ----------
 function StatusBar({ dark }) {
   return (
@@ -987,11 +1280,16 @@ function AdminDashboard({ onBack }) {
 }
 
 export default function App() {
+  const [auth, setAuth] = useState("splash"); // splash | login | register | app
+  const [user, setUser] = useState(null);
   const [screen, setScreen] = useState("feed");
   const [feedIndex, setFeedIndex] = useState(0);
   const [activeListing, setActiveListing] = useState(null);
 
-  // --- Accès admin 100% caché : pression longue 1.5s sur le logo → PIN ---
+  const onLoginSuccess  = (u) => { setUser(u); setAuth("app"); };
+  const onRegisterSuccess = (u) => { setUser(u); setAuth("app"); };
+
+  // --- Accès admin secret ---
   const ADMIN_PIN = "1234";
   const [showPinModal, setShowPinModal] = useState(false);
   const [pin, setPin] = useState("");
@@ -1000,34 +1298,46 @@ export default function App() {
 
   const onLogoPress = () => {
     longPressTimer.current = setTimeout(() => {
-      setShowPinModal(true);
-      setPin("");
-      setPinError(false);
+      setShowPinModal(true); setPin(""); setPinError(false);
     }, 1500);
   };
   const onLogoRelease = () => clearTimeout(longPressTimer.current);
 
   const submitPin = (p) => {
-    if (p === ADMIN_PIN) {
-      setShowPinModal(false);
-      setPin("");
-      setScreen("admin");
-    } else {
-      setPinError(true);
-      setPin("");
-      setTimeout(() => setPinError(false), 1200);
-    }
+    if (p === ADMIN_PIN) { setShowPinModal(false); setPin(""); setScreen("admin"); }
+    else { setPinError(true); setPin(""); setTimeout(() => setPinError(false), 1200); }
   };
-
-  const addDigit = (d) => {
-    const next = pin + d;
-    setPin(next);
-    if (next.length === 4) submitPin(next);
-  };
+  const addDigit = (d) => { const next = pin + d; setPin(next); if (next.length === 4) submitPin(next); };
 
   const openListing  = (item) => { setActiveListing(item); setScreen("detail"); };
   const openCheckout = (item) => { setActiveListing(item); setScreen("checkout"); };
 
+  // --- Écrans auth ---
+  if (auth === "splash") return (
+    <Wrapper>
+      <div style={{ width:320, height:660, borderRadius:30, border:"7px solid #1C1A16", overflow:"hidden", boxShadow:"0 18px 30px -12px rgba(0,0,0,.4)" }}>
+        <SplashScreen onLogin={() => setAuth("login")} onRegister={() => setAuth("register")} />
+      </div>
+    </Wrapper>
+  );
+
+  if (auth === "login") return (
+    <Wrapper>
+      <div style={{ width:320, height:660, background:"#F7F4EC", borderRadius:30, border:"7px solid #1C1A16", overflow:"hidden", boxShadow:"0 18px 30px -12px rgba(0,0,0,.4)" }}>
+        <LoginScreen onSuccess={onLoginSuccess} onRegister={() => setAuth("register")} onBack={() => setAuth("splash")} />
+      </div>
+    </Wrapper>
+  );
+
+  if (auth === "register") return (
+    <Wrapper>
+      <div style={{ width:320, height:660, background:"#F7F4EC", borderRadius:30, border:"7px solid #1C1A16", overflow:"hidden", boxShadow:"0 18px 30px -12px rgba(0,0,0,.4)" }}>
+        <RegisterScreen onSuccess={onRegisterSuccess} onLogin={() => setAuth("login")} onBack={() => setAuth("splash")} />
+      </div>
+    </Wrapper>
+  );
+
+  // --- App principale ---
   let body;
   if      (screen === "feed")     body = <FeedScreen index={feedIndex} setIndex={setFeedIndex} onOpenListing={openListing} onNavigate={setScreen} />;
   else if (screen === "detail")   body = <ListingDetail item={activeListing} onBack={() => setScreen("feed")} onBuy={() => openCheckout(activeListing)} />;
@@ -1040,14 +1350,48 @@ export default function App() {
   else if (screen === "admin")    body = <AdminDashboard onBack={() => setScreen("profile")} />;
 
   return (
+    <Wrapper onLogoPress={onLogoPress} onLogoRelease={onLogoRelease}>
+      <div style={{ width:320, height:660, background:"#F7F4EC", borderRadius:30, border:"7px solid #1C1A16", overflow:"hidden", boxShadow:"0 18px 30px -12px rgba(0,0,0,.4)", display:"flex", flexDirection:"column" }}>
+        {screen !== "feed" && screen !== "admin" && <StatusBar />}
+        <div style={{ flex:1, overflow:"hidden", position:"relative" }}>{body}</div>
+        {screen !== "admin" && <TabBar active={screen} onNavigate={setScreen} />}
+      </div>
+
+      {showPinModal && (
+        <div style={{ position:"fixed", inset:0, zIndex:999, background:"rgba(0,0,0,.88)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <div style={{ background:"#1C1A16", borderRadius:20, padding:"28px 24px", width:240, textAlign:"center", border:"1px solid rgba(255,255,255,.1)" }}>
+            <Logo size={18} dark={true} />
+            <div style={{ fontFamily:"'JetBrains Mono'", fontSize:9, color:"#E2462B", letterSpacing:".12em", margin:"10px 0 22px" }}>ACCÈS RESTREINT</div>
+            <div style={{ display:"flex", justifyContent:"center", gap:14, marginBottom:24 }}>
+              {[0,1,2,3].map(i => (
+                <div key={i} style={{ width:13, height:13, borderRadius:"50%", background: pin.length > i ? (pinError ? "#E2462B" : "#F5C518") : "rgba(255,255,255,.15)", transition:"background .15s" }} />
+              ))}
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, marginBottom:10 }}>
+              {[1,2,3,4,5,6,7,8,9].map(n => (
+                <button key={n} onClick={() => addDigit(String(n))} style={{ background:"rgba(255,255,255,.09)", border:"none", borderRadius:10, height:46, color:"#F7F4EC", fontSize:19, fontWeight:700, cursor:"pointer" }}>{n}</button>
+              ))}
+              <button onClick={() => { setShowPinModal(false); setPin(""); }} style={{ background:"rgba(255,255,255,.04)", border:"none", borderRadius:10, height:46, color:"rgba(255,255,255,.35)", fontSize:11, cursor:"pointer" }}>✕</button>
+              <button onClick={() => addDigit("0")} style={{ background:"rgba(255,255,255,.09)", border:"none", borderRadius:10, height:46, color:"#F7F4EC", fontSize:19, fontWeight:700, cursor:"pointer" }}>0</button>
+              <button onClick={() => setPin(p => p.slice(0,-1))} style={{ background:"rgba(255,255,255,.04)", border:"none", borderRadius:10, height:46, color:"rgba(255,255,255,.45)", fontSize:17, cursor:"pointer" }}>⌫</button>
+            </div>
+            {pinError && <div style={{ fontFamily:"'JetBrains Mono'", fontSize:10, color:"#E2462B" }}>Code incorrect</div>}
+          </div>
+        </div>
+      )}
+    </Wrapper>
+  );
+}
+
+// ---------- Wrapper commun ----------
+function Wrapper({ children, onLogoPress, onLogoRelease }) {
+  return (
     <div style={{ display:"flex", justifyContent:"center", alignItems:"center", minHeight:"100vh", background:"#1C1A16", fontFamily:"Manrope, sans-serif", flexDirection:"column", gap:20 }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,700;9..144,1,700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
         input:focus { outline: 2px solid #E2462B; }
         button:active { opacity: 0.75; }
       `}</style>
-
-      {/* Logo — pression longue 1.5s = modale PIN admin (invisible pour l'utilisateur) */}
       <div
         onMouseDown={onLogoPress} onMouseUp={onLogoRelease} onMouseLeave={onLogoRelease}
         onTouchStart={onLogoPress} onTouchEnd={onLogoRelease}
@@ -1055,57 +1399,7 @@ export default function App() {
       >
         <Logo size={32} dark={true} />
       </div>
-
-      <div style={{ width:320, height:660, background:"#F7F4EC", borderRadius:30, border:"7px solid #1C1A16", overflow:"hidden", boxShadow:"0 18px 30px -12px rgba(0,0,0,.4)", display:"flex", flexDirection:"column" }}>
-        {screen !== "feed" && screen !== "admin" && <StatusBar />}
-        <div style={{ flex:1, overflow:"hidden", position:"relative" }}>{body}</div>
-        {screen !== "admin" && <TabBar active={screen} onNavigate={setScreen} />}
-      </div>
-
-      {/* Modale PIN — apparaît seulement après pression longue, aucun lien visible */}
-      {showPinModal && (
-        <div style={{ position:"fixed", inset:0, zIndex:999, background:"rgba(0,0,0,.88)", display:"flex", alignItems:"center", justifyContent:"center" }}>
-          <div style={{ background:"#1C1A16", borderRadius:20, padding:"28px 24px", width:240, textAlign:"center", border:"1px solid rgba(255,255,255,.1)", boxShadow:"0 20px 40px rgba(0,0,0,.6)" }}>
-            <Logo size={18} dark={true} />
-            <div style={{ fontFamily:"'JetBrains Mono'", fontSize:9, color:"#E2462B", letterSpacing:".12em", margin:"10px 0 22px" }}>ACCÈS RESTREINT</div>
-
-            {/* Points PIN */}
-            <div style={{ display:"flex", justifyContent:"center", gap:14, marginBottom:24 }}>
-              {[0,1,2,3].map(i => (
-                <div key={i} style={{
-                  width:13, height:13, borderRadius:"50%",
-                  background: pin.length > i ? (pinError ? "#E2462B" : "#F5C518") : "rgba(255,255,255,.15)",
-                  transition:"background .15s, transform .15s",
-                  transform: pinError ? "scale(1.3)" : "scale(1)"
-                }} />
-              ))}
-            </div>
-
-            {/* Pavé numérique */}
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, marginBottom:10 }}>
-              {[1,2,3,4,5,6,7,8,9].map(n => (
-                <button key={n} onClick={() => addDigit(String(n))}
-                  style={{ background:"rgba(255,255,255,.09)", border:"none", borderRadius:10, height:46, color:"#F7F4EC", fontSize:19, fontWeight:700, cursor:"pointer", fontFamily:"Manrope" }}>
-                  {n}
-                </button>
-              ))}
-              {/* Annuler */}
-              <button onClick={() => { setShowPinModal(false); setPin(""); }}
-                style={{ background:"rgba(255,255,255,.04)", border:"none", borderRadius:10, height:46, color:"rgba(255,255,255,.35)", fontSize:11, cursor:"pointer" }}>✕</button>
-              {/* 0 */}
-              <button onClick={() => addDigit("0")}
-                style={{ background:"rgba(255,255,255,.09)", border:"none", borderRadius:10, height:46, color:"#F7F4EC", fontSize:19, fontWeight:700, cursor:"pointer", fontFamily:"Manrope" }}>0</button>
-              {/* Effacer */}
-              <button onClick={() => setPin(p => p.slice(0,-1))}
-                style={{ background:"rgba(255,255,255,.04)", border:"none", borderRadius:10, height:46, color:"rgba(255,255,255,.45)", fontSize:17, cursor:"pointer" }}>⌫</button>
-            </div>
-
-            {pinError && (
-              <div style={{ fontFamily:"'JetBrains Mono'", fontSize:10, color:"#E2462B", marginTop:4 }}>Code incorrect — réessayez</div>
-            )}
-          </div>
-        </div>
-      )}
+      {children}
     </div>
   );
 }
